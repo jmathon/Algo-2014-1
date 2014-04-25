@@ -134,10 +134,10 @@ namespace Algo.Tests
             {
                 foreach( var u2 in c.Users )
                 {
-                    double s = User.PearsonSimilarity( u1, u2 );
+                    double s = c.PearsonSimilarity( u1, u2 );
                     Assert.That( s >= -1 && s <= 1 );
                     //Assert.That( u1 != u2 || s == 1, "u1 == u2 => s == 1" );
-                    Assert.That( s == User.PearsonSimilarity( u2, u1 ) );
+                    Assert.That( s == c.PearsonSimilarity( u2, u1 ) );
                 }
             }
         }
