@@ -88,16 +88,25 @@ namespace Algo
 
         readonly static BestFUserComparer _fUserComparer = new BestFUserComparer();
 
-        public IReadOnlyList<Movie> GetRecommendedMovies()
+        public IReadOnlyList<Movie> GetRecommendedMovies( int count, RecoContext ctx )
         {
+            var bf = GetBestFUsers( ctx, count );
+            var movies = bf.SelectMany( a => a.FUser.Ratings.Select( k => new { Movie = k.Key, W = k.Value * a.Similarity } ) )
+                .GroupBy( a => a.Movie )
+                .Select( g => new { Movie = g.Key, W = g.Sum( e => e.W ) / g.Count() } )
+                .OrderByDescending( a => a.W )
+                .Select( a => a.Movie )
+                .Take( count )
+                .ToArray();
 
+            return movies;
         }
 
-        public IReadOnlyList<BestFUser> GetBestFUsers( RecoContext ctx )
+        public IReadOnlyList<BestFUser> GetBestFUsers( RecoContext ctx, int count )
         {
             if( _bestFUser == null )
             {
-                BestKeeper<BestFUser> bk = new BestKeeper<BestFUser>( 300, _fUserComparer );
+                BestKeeper<BestFUser> bk = new BestKeeper<BestFUser>( count, _fUserComparer );
                 foreach( var u in ctx.Users )
                 {
                     if( u != this )
