@@ -124,5 +124,22 @@ namespace Algo.Tests
             Assert.That( User.EuclidianDistance( u2, u2 ), Is.EqualTo( 0 ) );
             Assert.That( User.EuclidianDistance( u3, u3 ), Is.EqualTo( 0 ) );
         }
+
+        [Test]
+        public void TestPearsonCorrelation()
+        {
+            var c = new RecoContext();
+            c.LoadFrom( _goodDataPath );
+            foreach( var u1 in c.Users )
+            {
+                foreach( var u2 in c.Users )
+                {
+                    double s = User.PearsonSimilarity( u1, u2 );
+                    Assert.That( s >= -1 && s <= 1 );
+                    //Assert.That( u1 != u2 || s == 1, "u1 == u2 => s == 1" );
+                    Assert.That( s == User.PearsonSimilarity( u2, u1 ) );
+                }
+            }
+        }
     }
 }
