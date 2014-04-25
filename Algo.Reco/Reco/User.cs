@@ -3,6 +3,7 @@ using System.Collections.Generic;
 using System.Linq;
 using System.Text;
 using System.IO;
+using Algo.Reco;
 
 namespace Algo
 {
@@ -15,6 +16,7 @@ namespace Algo
         bool _male;
         string _occupation;
         string _zipCode;
+        IReadOnlyList<BestFUser> _bestFUser = null;
 
         /// <summary>
         /// User information is in the file "users.dat" and is in the following
@@ -74,6 +76,40 @@ namespace Algo
         public string ZipCode { get { return _zipCode; } }
 
         public Dictionary<Movie, int> Ratings { get; private set; }
+
+        class BestFUserComparer : IComparer<BestFUser>
+        {
+            public int Compare( BestFUser x, BestFUser y )
+            {
+                double delta = Math.Abs( x.Similarity ) - Math.Abs( y.Similarity );
+                return delta > 0 ? 1 : delta < 0 ? -1 : 0;
+            }
+        }
+
+        readonly static BestFUserComparer _fUserComparer = new BestFUserComparer();
+
+        public IReadOnlyList<Movie> GetRecommendedMovies()
+        {
+
+        }
+
+        public IReadOnlyList<BestFUser> GetBestFUsers( RecoContext ctx )
+        {
+            if( _bestFUser == null )
+            {
+                BestKeeper<BestFUser> bk = new BestKeeper<BestFUser>( 300, _fUserComparer );
+                foreach( var u in ctx.Users )
+                {
+                    if( u != this )
+                    {
+                        double s = ctx.PearsonSimilarity( this, u );
+                        bk.AddCandidate( new BestFUser( u, s ) );
+                    }
+                }
+                _bestFUser = bk.GetBest();
+            }
+            return _bestFUser;
+        }
 
         public double EuclidianSimilarityTo( User u )
         {

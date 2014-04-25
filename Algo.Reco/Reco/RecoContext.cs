@@ -52,10 +52,12 @@ namespace Algo
         {
             double result = 0;
             if( _cache.TryGetValue( new KeyPair( u1, u2 ), out result ) ) return result;
-            return DoComputePearsonSimilarity( u1, u2 );
+            result = DoComputePearsonSimilarity( u1, u2 );
+
+            return result;
         }
 
-        public double DoComputePearsonSimilarity( User u1, User u2 )
+        private double DoComputePearsonSimilarity( User u1, User u2 )
         {
             if( u1 == u2 ) return 1.0;
 

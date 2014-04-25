@@ -141,5 +141,19 @@ namespace Algo.Tests
                 }
             }
         }
+
+        [Test]
+        public void TestBestFriendsAndBestFoes ()
+        {
+            var c = new RecoContext();
+            c.LoadFrom( _goodDataPath );
+            foreach( var u1 in c.Users )
+            {
+                foreach( var u2 in c.Users )
+                {
+
+                }
+            }
+        }
     }
 }
