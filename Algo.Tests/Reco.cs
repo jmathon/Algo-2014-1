@@ -21,7 +21,7 @@ namespace Algo.Tests
             Movie.ReadMovies( Path.Combine( _badDataPath, "movies.dat" ), out firstMovies, out duplicateMovies );
             int idMovieMin = firstMovies.Keys.Min();
             int idMovieMax = firstMovies.Keys.Max();
-            Console.WriteLine( "{3} Movies from {0} to {1}, {2} duplicates.", idMovieMin, idMovieMax, duplicateMovies.Count, firstMovies.Count ); 
+            Console.WriteLine( "{3} Movies from {0} to {1}, {2} duplicates.", idMovieMin, idMovieMax, duplicateMovies.Count, firstMovies.Count );
 
             Dictionary<int, User> firstUsers;
             Dictionary<int, List<User>> duplicateUsers;
@@ -77,14 +77,14 @@ namespace Algo.Tests
                     u.UserID = ++idUser;
                     string occupation;
                     int idOccupation;
-                    if( int.TryParse( u.Occupation, out idOccupation ) 
-                        && idOccupation >= 0 
+                    if( int.TryParse( u.Occupation, out idOccupation )
+                        && idOccupation >= 0
                         && idOccupation < occupations.Length )
                     {
                         occupation = occupations[idOccupation];
                     }
                     else occupation = occupations[0];
-                    w.WriteLine( "{0}::{1}::{2}::{3}::{4}", u.UserID, u.Male ? 'M' : 'F', u.Age, occupation, "US-"+u.ZipCode );
+                    w.WriteLine( "{0}::{1}::{2}::{3}::{4}", u.UserID, u.Male ? 'M' : 'F', u.Age, occupation, "US-" + u.ZipCode );
                 }
             }
             // Saves Rating
@@ -106,10 +106,23 @@ namespace Algo.Tests
             RecoContext c = new RecoContext();
             c.LoadFrom( _goodDataPath );
             for( int i = 0; i < c.Users.Length; ++i )
-                Assert.That( c.Users[i].UserID, Is.EqualTo( i+1 ) );
+                Assert.That( c.Users[i].UserID, Is.EqualTo( i + 1 ) );
             for( int i = 0; i < c.Movies.Length; ++i )
-                Assert.That( c.Movies[i].MovieID, Is.EqualTo( i+1 ) );
+                Assert.That( c.Movies[i].MovieID, Is.EqualTo( i + 1 ) );
         }
 
+        [Test]
+        public void TestEuclidianDistance()
+        {
+            var c = new RecoContext();
+            c.LoadFrom( _goodDataPath );
+            var u1 = c.Users[0];
+            var u2 = c.Users[1];
+            var u3 = c.Users[2];
+
+            Assert.That( User.EuclidianDistance( u1, u1 ), Is.EqualTo( Double.NaN ) );
+            Assert.That( User.EuclidianDistance( u2, u2 ), Is.EqualTo( 0 ) );
+            Assert.That( User.EuclidianDistance( u3, u3 ), Is.EqualTo( 0 ) );
+        }
     }
 }

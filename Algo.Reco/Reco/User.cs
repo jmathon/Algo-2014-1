@@ -15,7 +15,7 @@ namespace Algo
         bool _male;
         string _occupation;
         string _zipCode;
-        
+
         /// <summary>
         /// User information is in the file "users.dat" and is in the following
         /// format:
@@ -68,14 +68,47 @@ namespace Algo
         public bool Male { get { return _male; } }
 
         public int Age { get { return (int)_age; } }
-        
+
         public string Occupation { get { return _occupation; } }
 
         public string ZipCode { get { return _zipCode; } }
 
         public Dictionary<Movie, int> Ratings { get; private set; }
 
+        public double EuclidianSimilarityTo( User u )
+        {
+            return EuclidianSimilarity( this, u );
+        }
+
+        public static double EuclidianSimilarity( User u1, User u2 )
+        {
+            double d = EuclidianDistance( u1, u2 );
+            if( Double.IsNaN( d ) ) return 0;
+            return (1 / 1 + d);
+        }
+
+        public static double EuclidianDistance( User u1, User u2 )
+        {
+            double result = 0;
+            var rating1 = u1.Ratings;
+            var rating2 = u2.Ratings;
+
+            int commonMovieCount = 0;
+            foreach( var r1 in rating1 )
+            {
+                int note1 = 0;
+                int note2 = 0;
+                if( rating2.TryGetValue( r1.Key, out note2 ) )
+                {
+                    note1 = r1.Value;
+                    result += Math.Pow( note1 - note2, 2 );
+                    commonMovieCount++;
+                }
+            }
+            if( commonMovieCount == 0 ) return Double.NaN;
+            return Math.Sqrt( result );
+        }
     }
-    
+
 
 }
